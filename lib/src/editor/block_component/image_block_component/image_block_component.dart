@@ -56,13 +56,10 @@ typedef ImageBlockComponentMenuBuilder = Widget Function(
 
 class ImageBlockComponentBuilder extends BlockComponentBuilder {
   ImageBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.showMenu = false,
     this.menuBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// Whether to show the menu of this block component.
   final bool showMenu;
@@ -233,7 +230,9 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
   CursorStyle get cursorStyle => CursorStyle.cover;
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     return getCursorRectInPosition(Position.invalid()) ?? Rect.zero;
   }
 
@@ -262,7 +261,7 @@ class ImageBlockComponentWidgetState extends State<ImageBlockComponentWidget>
     if (parentBox is RenderBox && dividerBox is RenderBox) {
       return [
         dividerBox.localToGlobal(Offset.zero, ancestor: parentBox) &
-            dividerBox.size
+            dividerBox.size,
       ];
     }
     return [Offset.zero & _renderBox!.size];

@@ -41,6 +41,7 @@ class TestableEditor {
     ScrollController? scrollController,
     Widget Function(Widget child)? wrapper,
     TargetPlatform? platform,
+    String? defaultTextDirection,
   }) async {
     await AppFlowyEditorLocalizations.load(locale);
 
@@ -68,8 +69,12 @@ class TestableEditor {
                 .testableFindAndReplaceCommands,
           ],
           editorStyle: inMobile
-              ? const EditorStyle.mobile()
-              : const EditorStyle.desktop(),
+              ? EditorStyle.mobile(
+                  defaultTextDirection: defaultTextDirection,
+                )
+              : EditorStyle.desktop(
+                  defaultTextDirection: defaultTextDirection,
+                ),
         );
       },
     );
@@ -110,7 +115,7 @@ class TestableEditor {
             numberedListItem,
             linkItem,
             buildTextColorItem(),
-            buildHighlightColorItem()
+            buildHighlightColorItem(),
           ],
           editorState: editorState,
           editorScrollController: editorScrollController,
@@ -316,7 +321,7 @@ class MockIMEInput {
           offset: selection.startIndex + 1 + text.length,
         ),
         composing: TextRange.empty,
-      )
+      ),
     ]);
     await tester.pumpAndSettle();
   }
@@ -349,7 +354,7 @@ class MockIMEInput {
           offset: selection.startIndex + 1 + text.length,
         ),
         composing: TextRange.empty,
-      )
+      ),
     ]);
     await tester.pumpAndSettle();
   }

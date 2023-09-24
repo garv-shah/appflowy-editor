@@ -7,7 +7,9 @@ final Map<String, BlockComponentBuilder> standardBlockComponentBuilderMap = {
   PageBlockKeys.type: PageBlockComponentBuilder(),
   ParagraphBlockKeys.type: TextBlockComponentBuilder(
     configuration: standardBlockComponentConfiguration.copyWith(
-      placeholderText: (_) => 'Enter a / to insert a block, or start typing',
+      placeholderText: (_) => PlatformExtension.isDesktopOrWeb
+          ? AppFlowyEditorLocalizations.current.slashPlaceHolder
+          : ' ',
     ),
   ),
   TodoListBlockKeys.type: TodoListBlockComponentBuilder(

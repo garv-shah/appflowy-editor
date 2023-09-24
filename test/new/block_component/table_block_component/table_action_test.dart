@@ -15,7 +15,7 @@ void main() async {
     testWidgets('remove column', (tester) async {
       var tableNode = TableNode.fromList([
         ['1', '2'],
-        ['3', '4']
+        ['3', '4'],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -38,9 +38,9 @@ void main() async {
           "type": "paragraph",
           "data": {
             "delta": [
-              {"insert": "3"}
-            ]
-          }
+              {"insert": "3"},
+            ],
+          },
         },
       );
       await editor.dispose();
@@ -49,7 +49,7 @@ void main() async {
     testWidgets('remove row', (tester) async {
       var tableNode = TableNode.fromList([
         ['1', '2'],
-        ['3', '4']
+        ['3', '4'],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -72,19 +72,62 @@ void main() async {
           "type": "paragraph",
           "data": {
             "delta": [
-              {"insert": "2"}
-            ]
-          }
+              {"insert": "2"},
+            ],
+          },
         },
       );
 
       await editor.dispose();
     });
 
+    testWidgets('remove the last column', (tester) async {
+      var tableNode = TableNode.fromList([
+        ['1', '2'],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      TableActions.delete(
+        tableNode.node,
+        0,
+        editor.editorState,
+        TableDirection.col,
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
+
+      expect(tester.editor.document.isEmpty, isTrue);
+      await editor.dispose();
+    });
+
+    testWidgets('remove the last row', (tester) async {
+      var tableNode = TableNode.fromList([
+        ['1'],
+        ['3'],
+      ]);
+      final editor = tester.editor..addNode(tableNode.node);
+
+      await editor.startTesting();
+      await tester.pumpAndSettle();
+
+      TableActions.delete(
+        tableNode.node,
+        0,
+        editor.editorState,
+        TableDirection.row,
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 200));
+
+      expect(tester.editor.document.isEmpty, isTrue);
+      await editor.dispose();
+    });
+
     testWidgets('duplicate column', (tester) async {
       var tableNode = TableNode.fromList([
         ['1', '2'],
-        ['3', '4']
+        ['3', '4'],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -113,7 +156,7 @@ void main() async {
     testWidgets('duplicate row', (tester) async {
       var tableNode = TableNode.fromList([
         ['1', '2'],
-        ['3', '4']
+        ['3', '4'],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -142,7 +185,7 @@ void main() async {
     testWidgets('add column', (tester) async {
       var tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -163,7 +206,7 @@ void main() async {
         tableNode.getCell(2, 1).children.first.toJson(),
         {
           "type": "paragraph",
-          "data": {"delta": []}
+          "data": {"delta": []},
         },
       );
       expect(tableNode.getColWidth(2), tableNode.config.colDefaultWidth);
@@ -173,7 +216,7 @@ void main() async {
     testWidgets('add row', (tester) async {
       var tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -194,7 +237,7 @@ void main() async {
         tableNode.getCell(0, 2).children.first.toJson(),
         {
           "type": "paragraph",
-          "data": {"delta": []}
+          "data": {"delta": []},
         },
       );
 
@@ -206,7 +249,7 @@ void main() async {
     testWidgets('set row bg color', (tester) async {
       var tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -237,7 +280,7 @@ void main() async {
     testWidgets('add column respect row bg color', (tester) async {
       var tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 
@@ -276,7 +319,7 @@ void main() async {
     testWidgets('add row respect column bg color', (tester) async {
       var tableNode = TableNode.fromList([
         ['', ''],
-        ['', '']
+        ['', ''],
       ]);
       final editor = tester.editor..addNode(tableNode.node);
 

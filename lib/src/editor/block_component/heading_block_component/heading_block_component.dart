@@ -40,12 +40,9 @@ Node headingNode({
 
 class HeadingBlockComponentBuilder extends BlockComponentBuilder {
   HeadingBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.textStyleBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   /// The text style of the heading block.
   final TextStyle Function(int level)? textStyleBuilder;
@@ -136,6 +133,9 @@ class _HeadingBlockComponentWidgetState
       // make the width of the rich text as small as possible to avoid
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        textDirection: textDirection,
         children: [
           Flexible(
             child: AppFlowyRichText(
@@ -144,11 +144,14 @@ class _HeadingBlockComponentWidgetState
               node: widget.node,
               editorState: editorState,
               textAlign: alignment?.toTextAlign,
-              textSpanDecorator: (textSpan) =>
-                  textSpan.updateTextStyle(textStyle).updateTextStyle(
-                        widget.textStyleBuilder?.call(level) ??
-                            defaultTextStyle(level),
-                      ),
+              textSpanDecorator: (textSpan) {
+                var result = textSpan.updateTextStyle(textStyle);
+                result = result.updateTextStyle(
+                  widget.textStyleBuilder?.call(level) ??
+                      defaultTextStyle(level),
+                );
+                return result;
+              },
               placeholderText: placeholderText,
               placeholderTextSpanDecorator: (textSpan) => textSpan
                   .updateTextStyle(

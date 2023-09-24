@@ -105,27 +105,20 @@ class _ScrollServiceWidgetState extends State<ScrollServiceWidget>
 
       if (editorState.selectionUpdateReason ==
           SelectionUpdateReason.searchNavigate) {
-        widget.editorScrollController.animateTo(
-          offset: endTouchPoint.dy - 100,
-          duration: const Duration(microseconds: 1),
-        );
-        return;
+        return widget.editorScrollController
+            .jumpTo(offset: endTouchPoint.dy - 100);
       }
 
-      if (selection.isCollapsed) {
-        if (PlatformExtension.isMobile) {
-          // soft keyboard
-          // workaround: wait for the soft keyboard to show up
-          Future.delayed(const Duration(milliseconds: 300), () {
-            startAutoScroll(endTouchPoint, edgeOffset: 50);
-          });
-        } else {
+      if (PlatformExtension.isMobile) {
+        // soft keyboard
+        // workaround: wait for the soft keyboard to show up
+        return Future.delayed(const Duration(milliseconds: 300), () {
           startAutoScroll(
             endTouchPoint,
-            edgeOffset: 100,
+            edgeOffset: 50,
             duration: Duration.zero,
           );
-        }
+        });
       } else {
         startAutoScroll(
           endTouchPoint,

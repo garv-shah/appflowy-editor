@@ -139,7 +139,9 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
       );
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     throw UnimplementedError();
   }
 
@@ -355,6 +357,16 @@ class _AppFlowyRichTextState extends State<AppFlowyRichText>
             TextStyle(color: attributes.color),
           );
         }
+        if (attributes.fontFamily != null) {
+          textStyle = textStyle.combine(
+            TextStyle(fontFamily: attributes.fontFamily),
+          );
+        }
+        if (attributes.fontSize != null) {
+          textStyle = textStyle.combine(
+            TextStyle(fontSize: attributes.fontSize),
+          );
+        }
       }
       final textSpan = TextSpan(
         text: textInsert.text,
@@ -464,6 +476,20 @@ extension AppFlowyRichTextAttributes on Attributes {
   String? get href {
     if (this[AppFlowyRichTextKeys.href] is String) {
       return this[AppFlowyRichTextKeys.href];
+    }
+    return null;
+  }
+
+  String? get fontFamily {
+    if (this[AppFlowyRichTextKeys.fontFamily] is String) {
+      return this[AppFlowyRichTextKeys.fontFamily];
+    }
+    return null;
+  }
+
+  double? get fontSize {
+    if (this[AppFlowyRichTextKeys.fontSize] is double) {
+      return this[AppFlowyRichTextKeys.fontSize];
     }
     return null;
   }

@@ -58,15 +58,12 @@ typedef TableBlockComponentMenuBuilder = Widget Function(
 
 class TableBlockComponentBuilder extends BlockComponentBuilder {
   TableBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.addIcon = TableDefaults.addIcon,
     this.borderColor = TableDefaults.borderColor,
     this.borderHoverColor = TableDefaults.borderHoverColor,
     this.menuBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final Widget addIcon;
   final TableBlockComponentMenuBuilder? menuBuilder;
@@ -210,7 +207,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
         (shiftWithBaseOffset
                 ? tableBox.localToGlobal(Offset.zero, ancestor: parentBox)
                 : Offset.zero) &
-            tableBox.size
+            tableBox.size,
       ];
     }
     return [Offset.zero & _renderBox.size];
@@ -237,7 +234,9 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
       _renderBox.localToGlobal(offset);
 
   @override
-  Rect getBlockRect() {
+  Rect getBlockRect({
+    bool shiftWithBaseOffset = false,
+  }) {
     return getRectsInSelection(Selection.invalid()).first;
   }
 
@@ -252,7 +251,7 @@ class _TableBlockComponentWidgetState extends State<TableBlockComponentWidget>
 }
 
 SelectionMenuItem tableMenuItem = SelectionMenuItem(
-  name: 'Table',
+  name: AppFlowyEditorLocalizations.current.table,
   icon: (editorState, isSelected, style) => SelectionMenuIconWidget(
     icon: Icons.table_view,
     isSelected: isSelected,
@@ -272,7 +271,7 @@ SelectionMenuItem tableMenuItem = SelectionMenuItem(
 
     final tableNode = TableNode.fromList([
       ['', ''],
-      ['', '']
+      ['', ''],
     ]);
 
     final transaction = editorState.transaction;

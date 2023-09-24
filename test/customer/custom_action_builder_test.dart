@@ -7,6 +7,9 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 void main() async {
   /// customize the action builder
+  await AppFlowyEditorLocalizations.load(
+    const Locale.fromSubtags(languageCode: 'en'),
+  );
   testWidgets('customize the image block\'s menu', (tester) async {
     await mockNetworkImagesFor(() async {
       const widget = CustomActionBuilder();
@@ -50,7 +53,7 @@ class CustomActionBuilder extends StatelessWidget {
     const text = 'Hello AppFlowy!';
     final document = Document.blank()
       ..insert([
-        0
+        0,
       ], [
         paragraphNode(text: text),
       ]);

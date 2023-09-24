@@ -36,12 +36,9 @@ Node bulletedListNode({
 
 class BulletedListBlockComponentBuilder extends BlockComponentBuilder {
   BulletedListBlockComponentBuilder({
-    this.configuration = const BlockComponentConfiguration(),
+    super.configuration,
     this.iconBuilder,
   });
-
-  @override
-  final BlockComponentConfiguration configuration;
 
   final BlockIconBuilder? iconBuilder;
 
@@ -110,13 +107,16 @@ class _BulletedListBlockComponentWidgetState
   Node get node => widget.node;
 
   @override
-  Widget buildComponent(BuildContext context) {
+  Widget buildComponent(
+    BuildContext context, {
+    bool withBackgroundColor = true,
+  }) {
     final textDirection = calculateTextDirection(
       layoutDirection: Directionality.maybeOf(context),
     );
 
     Widget child = Container(
-      color: backgroundColor,
+      color: withBackgroundColor ? backgroundColor : null,
       width: double.infinity,
       alignment: alignment,
       child: Row(

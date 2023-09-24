@@ -62,6 +62,7 @@ enum TransactionTime {
 class EditorState {
   EditorState({
     required this.document,
+    this.minHistoryItemDuration = const Duration(milliseconds: 200),
   }) {
     undoManager.state = this;
   }
@@ -81,6 +82,9 @@ class EditorState {
         );
 
   final Document document;
+
+  // the minimum duration for saving the history item.
+  final Duration minHistoryItemDuration;
 
   /// Whether the editor is editable.
   bool editable = true;
@@ -317,9 +321,9 @@ class EditorState {
             blockComponentDelta: delta
                 .slice(
                   selection.startIndex,
-                  delta.length,
+                  selection.isSingle ? selection.endIndex : delta.length,
                 )
-                .toJson()
+                .toJson(),
           },
         );
       }
@@ -329,7 +333,7 @@ class EditorState {
         node = node.children.last;
       }
       delta = node.delta;
-      if (delta != null) {
+      if (delta != null && !selection.isSingle) {
         if (node.parent != null) {
           node.insertBefore(
             node.copyWith(
@@ -340,7 +344,7 @@ class EditorState {
                       0,
                       selection.endIndex,
                     )
-                    .toJson()
+                    .toJson(),
               },
             ),
           );
@@ -354,7 +358,7 @@ class EditorState {
                     0,
                     selection.endIndex,
                   )
-                  .toJson()
+                  .toJson(),
             },
           );
         }
@@ -418,21 +422,6 @@ class EditorState {
       }
     }
 
-    /*
-    final rects = nodes
-        .map(
-          (node) => node.selectable
-              ?.getRectsInSelection(selection)
-              .map(
-                (rect) => node.renderBox?.localToGlobal(rect.topLeft),
-              )
-              .whereNotNull(),
-        )
-        .whereNotNull()
-        .expand((element) => element)
-        .toList();
-    */
-
     return rects;
   }
 
@@ -447,6 +436,7 @@ class EditorState {
       autoScroller?.stopAutoScroll();
       autoScroller = AutoScroller(
         scrollableState,
+        velocityScalar: PlatformExtension.isDesktopOrWeb ? 50 : 100,
         onScrollViewScrolled: () {},
       );
       this.scrollableState = scrollableState;
@@ -477,8 +467,7 @@ class EditorState {
       return;
     }
     _debouncedSealHistoryItemTimer?.cancel();
-    _debouncedSealHistoryItemTimer =
-        Timer(const Duration(milliseconds: 1000), () {
+    _debouncedSealHistoryItemTimer = Timer(minHistoryItemDuration, () {
       if (undoManager.undoStack.isNonEmpty) {
         Log.editor.debug('Seal history item');
         final last = undoManager.undoStack.last;
